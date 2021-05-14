@@ -13,12 +13,30 @@ export default class App extends Component {
         super(props);
         this.state = {
             data : [
-                {label:"Going to learn React", important: true, id: 'dljl'},
-                {label:"it is so good", important: false, id: 'sfne'},
-                {label:"i need a break", important: false, id: 'rnfdl'},
+                {label:"Going to learn React", important: true, like: false, id: 'dljl'},
+                {label:"it is so good", important: false, like: false, id: 'sfne'},
+                {label:"i need a break", important: false, like: false, id: 'rnfdl'},
             ]
         }
         this.deleteListItem = this.deleteListItem.bind(this);
+        this.onImportant = this.onImportant.bind(this);
+        this.onLike = this.onLike.bind(this);
+    }
+
+    onImportant(id){
+        console.log('important');
+    }
+
+    onLike(id){
+        this.setState(({data}) =>{
+            const index = data.findIndex((item) => item.id === id);
+            const oldItem = data[index];
+            const newItem = {...oldItem, like: !oldItem.like}
+            const newArray = [...data.slice(0, index), newItem, ...data.slice(index + 1)]
+            return{
+                data:newArray
+            }
+        })
     }
 
     deleteListItem(id){
@@ -40,7 +58,9 @@ export default class App extends Component {
                 </div>
                 <PostList
                     posts={this.state.data}
-                    deleteItem = {this.deleteListItem} />
+                    deleteItem = {this.deleteListItem}
+                    onImportant = {this.onImportant}
+                    onLike = {this.onLike} />
                 <PostAddForm/>
             </div>
         )

@@ -2,7 +2,7 @@ import React from 'react';
 import PostListItem from '../post-list-item';
 import './post-list.css';
 
-const PostList = ({posts, deleteItem})=>{
+const PostList = ({posts, deleteItem, onImportant, onLike})=>{
 
     const elements = posts.map((element) =>{
         
@@ -13,6 +13,8 @@ const PostList = ({posts, deleteItem})=>{
                 <PostListItem 
                     {...itemProps}
                     deleteItem={()=>deleteItem(id)}
+                    onImportant = {()=>onImportant(id)}
+                    onLike = {() => onLike(id)}
                     /*label = {element.label}
                     important = {element.important}*/
                 />
