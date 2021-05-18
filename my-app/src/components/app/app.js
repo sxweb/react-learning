@@ -21,10 +21,19 @@ export default class App extends Component {
         this.deleteListItem = this.deleteListItem.bind(this);
         this.onImportant = this.onImportant.bind(this);
         this.onLike = this.onLike.bind(this);
+        this.addItem = this.addItem.bind(this);
     }
 
     onImportant(id){
-        console.log('important');
+        this.setState(({data}) =>{
+            const index = data.findIndex((item) => item.id === id);
+            const oldItem = data[index];
+            const newItem = {...oldItem, important: !oldItem.important}
+            const newArray = [...data.slice(0, index), newItem, ...data.slice(index + 1)]
+            return{
+                data:newArray
+            }
+        })
     }
 
     onLike(id){
@@ -48,6 +57,14 @@ export default class App extends Component {
         });
     }
 
+    addItem(body){
+        const newItem = {label: body, important: false, like: false, id: this.state.data.length + 1}
+        this.setState(({data}) =>{
+            const newArray = [...data, newItem];
+            return {data: newArray}
+        })
+    }
+
     render(){
         const data = this.state.data;
         const liked = data.filter(item => item.like === true).length,
@@ -67,7 +84,8 @@ export default class App extends Component {
                     deleteItem = {this.deleteListItem}
                     onImportant = {this.onImportant}
                     onLike = {this.onLike} />
-                <PostAddForm/>
+                <PostAddForm
+                    addItem = {this.addItem}/>
             </div>
         )
     }
