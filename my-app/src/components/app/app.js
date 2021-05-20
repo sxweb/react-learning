@@ -16,14 +16,19 @@ export default class App extends Component {
                 {label:"Going to learn React", important: true, like: false, id: 'dljl'},
                 {label:"it is so good", important: false, like: false, id: 'sfne'},
                 {label:"i need a break", important: false, like: false, id: 'rnfdl'},
-            ]
+            ],
+            term: ''
         }
         this.deleteListItem = this.deleteListItem.bind(this);
         this.onImportant = this.onImportant.bind(this);
         this.onLike = this.onLike.bind(this);
         this.addItem = this.addItem.bind(this);
+        this.searchPost = this.searchPost.bind(this);
+        this.updateSearch = this.updateSearch.bind(this);
     }
-
+    updateSearch(term){
+        this.setState({term});
+    }
     onImportant(id){
         this.setState(({data}) =>{
             const index = data.findIndex((item) => item.id === id);
@@ -33,6 +38,15 @@ export default class App extends Component {
             return{
                 data:newArray
             }
+        })
+    }
+
+    searchPost(items, term){
+        if(term.length === 0){
+            return items;
+        }
+        return items.filter((item) =>{
+            return item.label.indexOf(term) > -1;
         })
     }
 
@@ -66,9 +80,10 @@ export default class App extends Component {
     }
 
     render(){
-        const data = this.state.data;
+        const {data, term} = this.state;
         const liked = data.filter(item => item.like === true).length,
             allPosts = data.length;
+        const visiblePosts = this.searchPost(data, term);
         return (
             
             <div className="app">
@@ -76,11 +91,12 @@ export default class App extends Component {
                 liked = {liked}
                 allPosts = {allPosts}/>
                 <div className="d-flex search-panel">
-                    <SearchPanel/>
+                    <SearchPanel
+                    updateSearch = {this.updateSearch}/>
                     <PostStatusFilter/>
                 </div>
                 <PostList
-                    posts={this.state.data}
+                    posts={visiblePosts}
                     deleteItem = {this.deleteListItem}
                     onImportant = {this.onImportant}
                     onLike = {this.onLike} />
