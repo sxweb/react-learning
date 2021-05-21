@@ -17,7 +17,8 @@ export default class App extends Component {
                 {label:"it is so good", important: false, like: false, id: 'sfne'},
                 {label:"i need a break", important: false, like: false, id: 'rnfdl'},
             ],
-            term: ''
+            term: '',
+            filter: 'all'
         }
         this.deleteListItem = this.deleteListItem.bind(this);
         this.onImportant = this.onImportant.bind(this);
@@ -25,7 +26,22 @@ export default class App extends Component {
         this.addItem = this.addItem.bind(this);
         this.searchPost = this.searchPost.bind(this);
         this.updateSearch = this.updateSearch.bind(this);
+        this.filterPosts = this.filterPosts.bind(this);
+        this.changeFilter = this.changeFilter.bind(this);
     }
+
+    changeFilter(filter){
+        this.setState({filter});
+    }
+
+    filterPosts(items, filter){
+        if(filter === 'like'){
+            return items.filter(item => item.like);
+        }else{
+            return items;
+        }
+    }
+
     updateSearch(term){
         this.setState({term});
     }
@@ -80,10 +96,10 @@ export default class App extends Component {
     }
 
     render(){
-        const {data, term} = this.state;
+        const {data, term, filter} = this.state;
         const liked = data.filter(item => item.like === true).length,
             allPosts = data.length;
-        const visiblePosts = this.searchPost(data, term);
+        const visiblePosts = this.filterPosts(this.searchPost(data, term), filter);
         return (
             
             <div className="app">
@@ -93,7 +109,9 @@ export default class App extends Component {
                 <div className="d-flex search-panel">
                     <SearchPanel
                     updateSearch = {this.updateSearch}/>
-                    <PostStatusFilter/>
+                    <PostStatusFilter
+                        filter = {filter}
+                        changeFilter = {this.changeFilter}/>
                 </div>
                 <PostList
                     posts={visiblePosts}
